@@ -688,12 +688,17 @@ fn extract_tag_contents(wsdl: &str, tag: &str) -> Vec<TagMatch> {
             let next_open = wsdl[cursor..].find(&open_pat);
             let next_close = wsdl[cursor..].find(&close_tag);
             let (Some(next_open), Some(next_close)) = (next_open, next_close) else {
-                assert!(nesting == 0, "Invalid XML nesting or surprising self-closing tag");
+                assert!(
+                    nesting == 0,
+                    "Invalid XML nesting or surprising self-closing tag"
+                );
                 break;
             };
             if next_open < next_close {
                 // Could be self-closing…
-                if wsdl[cursor + next_open..].find("/>").unwrap_or(usize::MAX) > wsdl[cursor + next_open..].find(">").unwrap_or(usize::MAX) {
+                if wsdl[cursor + next_open..].find("/>").unwrap_or(usize::MAX)
+                    > wsdl[cursor + next_open..].find(">").unwrap_or(usize::MAX)
+                {
                     // … so only if it is not, we go deeper …
                     nesting += 1;
                 }
